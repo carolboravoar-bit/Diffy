@@ -188,7 +188,7 @@ export function Sidebar() {
                   >
                     {item.label}
                   </span>
-                  {"badge" in item && item.badge && (
+                  {"badge" in item && (item as { badge: string }).badge && (
                     <span
                       className="text-xs px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0"
                       style={{
@@ -198,7 +198,7 @@ export function Sidebar() {
                         fontSize: "10px",
                       }}
                     >
-                      {item.badge}
+                      {(item as { badge: string }).badge}
                     </span>
                   )}
                 </Link>
