@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 const ROTAS_PUBLICAS = ["/", "/login", "/cadastro"];
 const ROTAS_ADMIN = ["/admin"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (ROTAS_PUBLICAS.some((r) => pathname === r || pathname.startsWith(r + "/"))) {
@@ -45,7 +45,7 @@ export async function middleware(request: NextRequest) {
       .single();
 
     if (profile?.role !== "admin") {
-      return NextResponse.redirect(new URL("/painel", request.url));
+      return NextResponse.redirect(new URL("/decolagem", request.url));
     }
   }
 
