@@ -23,11 +23,15 @@ const navGroups = [
     label: null,
     items: [
       {
-        href: "/conversar",
-        label: "Conversar",
-        icon: MessageCircle,
-        badge: "WhatsApp",
+        href: "/decolagem",
+        label: "Decolagem",
+        icon: RocketIcon,
         destaque: true,
+      },
+      {
+        href: "/conversar",
+        label: "Conversar com a Diffy",
+        icon: MessageCircle,
       },
       {
         href: "/painel",
@@ -50,7 +54,6 @@ const navGroups = [
     label: "Estratégia",
     items: [
       { href: "/raiox", label: "RaioX", icon: Zap },
-      { href: "/decolagem", label: "Decolagem", icon: RocketIcon },
       { href: "/configuracoes", label: "Configurações", icon: Settings },
     ],
   },

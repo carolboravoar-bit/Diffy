@@ -25,7 +25,7 @@ export default function LoginPage() {
       setError("Email ou senha incorretos. Tenta de novo.");
       setLoading(false);
     } else {
-      router.push("/painel");
+      router.push("/decolagem");
       router.refresh();
     }
   }
