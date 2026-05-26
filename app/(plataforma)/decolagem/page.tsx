@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 const WHATSAPP_NUMBER = "+1 (415) 523-8886"; // Número do sandbox Twilio WhatsApp
-const WHATSAPP_JOIN_CODE = "join "; // completar com a palavra-chave do sandbox Twilio
+const WHATSAPP_JOIN_CODE = "join grabbed-particles";
 
 const modulos = [
   {
