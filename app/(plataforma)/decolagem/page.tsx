@@ -7,11 +7,55 @@ import { RocketIcon } from "@/app/components/RocketIcon";
 import {
   MessageCircle, LayoutDashboard, Users, Megaphone,
   DollarSign, Calendar, FileText, Zap, CheckCircle2,
-  Circle, ChevronDown, ChevronUp, ArrowRight, Smartphone, Copy, Check,
+  Circle, ChevronDown, ChevronUp, ArrowRight, Smartphone, Copy, Check, CheckCheck,
+  Lightbulb, FileEdit, HeartHandshake, TrendingUp,
 } from "lucide-react";
 
-const WHATSAPP_NUMBER = "+1 (415) 523-8886"; // Número do sandbox Twilio WhatsApp
+const WHATSAPP_NUMBER = "+1 (415) 523-8886";
 const WHATSAPP_JOIN_CODE = "join grabbed-particles";
+const WHATSAPP_JOIN_URL = "https://wa.me/14155238886?text=join%20grabbed-particles";
+
+const conversaMockup = [
+  { lado: "inedita", texto: "Tenho uma cliente que sumiu depois de fechar o pacote. Como lido com isso?", hora: "09:14" },
+  { lado: "diffy", texto: "Antes de cobrar: manda uma mensagem curta e sem cobrança. Tipo \"Oi [nome], tô aqui quando você precisar retomar.\" Dá espaço, mas marca presença. Quer que eu te ajude a escrever?", hora: "09:14" },
+  { lado: "inedita", texto: "sim por favor", hora: "09:15" },
+  { lado: "diffy", texto: "Aqui: \"Oi [nome]! Só passando pra dizer que o seu espaço aqui tá guardado. Qualquer hora que quiser continuar, é só falar.\" Simples, sem pressão, e deixa a porta aberta.", hora: "09:15" },
+];
+
+const exemplosWhatsApp = [
+  {
+    icon: TrendingUp,
+    titulo: "Estratégia e posicionamento",
+    trocas: [
+      { lado: "inedita", msg: "Tô com dificuldade de explicar o que me diferencia. Me ajuda?" },
+      { lado: "diffy", msg: "Me conta: o que suas clientes mais falam depois de trabalhar com você? Qual transformação elas descrevem?" },
+    ],
+  },
+  {
+    icon: FileEdit,
+    titulo: "Redigir proposta ou cobrança",
+    trocas: [
+      { lado: "inedita", msg: "Preciso mandar uma proposta pra uma cliente nova. Pacote de 3 meses, R$2.400." },
+      { lado: "diffy", msg: "Me conta um pouco sobre ela e o que ela precisa resolver — faço a proposta completa pra você ajustar e enviar." },
+    ],
+  },
+  {
+    icon: Lightbulb,
+    titulo: "Ideia de conteúdo na hora",
+    trocas: [
+      { lado: "inedita", msg: "Travei no conteúdo de amanhã. Tema: precificação." },
+      { lado: "diffy", msg: "\"O preço que você cobra diz o que você acredita que vale. E quando você subestima, a cliente também subestima.\" Quer esse como legenda ou abertura de carrossel?" },
+    ],
+  },
+  {
+    icon: HeartHandshake,
+    titulo: "Um dia difícil",
+    trocas: [
+      { lado: "inedita", msg: "Perdi uma cliente hoje. Tô me sentindo péssima." },
+      { lado: "diffy", msg: "Isso dói de verdade. Quer desabafar mais ou prefere que a gente olhe o que aconteceu com calma pra entender o que fazer diferente?" },
+    ],
+  },
+];
 
 const modulos = [
   {
@@ -218,71 +262,155 @@ export default function DecolagemPage() {
           <h2 className="text-lg font-bold mb-4" style={{ fontFamily: "var(--font-playfair)", color: "#2C2C2C" }}>
             Primeiro passo: a Diffy no WhatsApp
           </h2>
-          <div className="p-6 rounded-2xl" style={{ background: "#fff", border: "1px solid #EFEFEF" }}>
-            <p className="text-sm mb-5" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>
-              A Diffy vive no WhatsApp. É por lá que você vai falar com ela no dia a dia — uma mensagem rápida resolve. A plataforma é pra quando você quiser ver os dados, o histórico e os módulos com mais calma.
-            </p>
-            <div className="space-y-4">
-              {[
-                {
-                  num: "1",
-                  titulo: "Salve o número da Diffy",
-                  desc: "Salve no celular como \"Minha Diffy\" ou o nome que preferir.",
-                  extra: (
-                    <div className="flex items-center gap-3 mt-2 p-3 rounded-xl" style={{ background: "#F7F7F5" }}>
-                      <Smartphone size={16} style={{ color: "#D81B60" }} />
-                      <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>{WHATSAPP_NUMBER}</span>
-                      <CopyButton text={WHATSAPP_NUMBER} />
+
+          {/* Aviso sandbox */}
+          <div className="flex gap-3 p-4 rounded-xl mb-6" style={{ background: "#FFF8E1", border: "1px solid #FFE082" }}>
+            <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold text-white" style={{ background: "#F9A825" }}>!</div>
+            <div>
+              <p className="text-sm font-semibold mb-0.5" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Uma etapa rápida antes de começar</p>
+              <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>
+                A Diffy ainda está em fase de testes e usa um número compartilhado. Por isso você precisa fazer um cadastro de 5 segundos no WhatsApp antes de começar. É só uma vez.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[1fr_260px] gap-8 items-start" style={{ gridTemplateColumns: "1fr 260px" }}>
+            {/* Coluna esquerda: passos + exemplos */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-5" style={{ fontFamily: "var(--font-inter)", color: "#BDBDBD" }}>Como ativar</p>
+
+              {/* Passo 1 */}
+              <div className="flex gap-4 items-start mb-5">
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: "#2C2C2C", color: "#D81B60", fontFamily: "var(--font-inter)" }}>1</div>
+                <div className="flex-1">
+                  <p className="text-base font-semibold mb-1" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Clique no botão abaixo</p>
+                  <p className="text-sm mb-4 leading-snug" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>Abre o WhatsApp com o número e a mensagem de ativação já prontos.</p>
+                  <a
+                    href={WHATSAPP_JOIN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2.5 text-sm font-bold px-5 py-3 rounded-xl transition-opacity hover:opacity-90"
+                    style={{ background: "#25D366", color: "#fff", fontFamily: "var(--font-inter)" }}
+                  >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    Ativar Diffy no WhatsApp
+                  </a>
+                </div>
+              </div>
+
+              <div className="h-px ml-[52px] mb-5" style={{ background: "#F0F0F0" }} />
+
+              {/* Passo 2 */}
+              <div className="flex gap-4 items-start mb-5">
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: "#2C2C2C", color: "#D81B60", fontFamily: "var(--font-inter)" }}>2</div>
+                <div className="flex-1">
+                  <p className="text-base font-semibold mb-1" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Toque em <span style={{ fontFamily: "monospace", background: "rgba(44,44,44,0.06)", padding: "2px 6px", borderRadius: "4px" }}>Enviar</span> no WhatsApp</p>
+                  <p className="text-sm leading-snug" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>A mensagem <strong style={{ color: "#2C2C2C" }}>"join grabbed-particles"</strong> já vai estar digitada. É só enviar para confirmar seu número.</p>
+                </div>
+              </div>
+
+              <div className="h-px ml-[52px] mb-5" style={{ background: "#F0F0F0" }} />
+
+              {/* Passo 3 */}
+              <div className="flex gap-4 items-start mb-8">
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 text-white" style={{ background: "#25D366", fontFamily: "var(--font-inter)" }}>✓</div>
+                <div className="flex-1">
+                  <p className="text-base font-semibold mb-1" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Pronto — a Diffy responde e a conversa começa</p>
+                  <p className="text-sm leading-snug" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>De agora em diante é só mandar mensagem normalmente. Texto ou áudio. Ela já sabe quem você é e o que é o seu negócio.</p>
+                </div>
+              </div>
+
+              {/* Exemplos */}
+              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ fontFamily: "var(--font-inter)", color: "#BDBDBD" }}>O que dá pra fazer</p>
+              <div className="space-y-3">
+                {exemplosWhatsApp.map(({ icon: Icon, titulo, trocas }) => (
+                  <div key={titulo} className="rounded-xl overflow-hidden" style={{ border: "1px solid #EFEFEF" }}>
+                    <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: "#FAFAFA", borderBottom: "1px solid #F0F0F0" }}>
+                      <Icon size={12} style={{ color: "#D81B60", flexShrink: 0 }} />
+                      <p className="text-xs font-semibold" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>{titulo}</p>
                     </div>
-                  ),
-                },
-                {
-                  num: "2",
-                  titulo: "Ative a conversa",
-                  desc: "Mande essa mensagem exata no WhatsApp para a Diffy te reconhecer:",
-                  extra: (
-                    <div className="flex items-center gap-3 mt-2 p-3 rounded-xl" style={{ background: "#F7F7F5" }}>
-                      <span className="text-sm font-semibold font-mono" style={{ fontFamily: "monospace", color: "#2C2C2C" }}>{WHATSAPP_JOIN_CODE}</span>
-                      <CopyButton text={WHATSAPP_JOIN_CODE} />
+                    <div className="p-3 space-y-2" style={{ background: "#ECE5DD" }}>
+                      {trocas.map((t, i) => (
+                        <div key={i} className={`flex ${t.lado === "inedita" ? "justify-end" : "justify-start"}`}>
+                          <div className="px-3 py-2 shadow-sm max-w-[85%]" style={{
+                            background: t.lado === "inedita" ? "#DCF8C6" : "#fff",
+                            borderRadius: t.lado === "inedita" ? "10px 10px 3px 10px" : "10px 10px 10px 3px",
+                          }}>
+                            <p className="text-xs leading-snug" style={{ color: "rgba(0,0,0,0.82)", fontFamily: "var(--font-inter)" }}>{t.msg}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ),
-                },
-                {
-                  num: "3",
-                  titulo: "Mande \"Oi Diffy\"",
-                  desc: "Ela já sabe quem você é. Apresente-se, fale do seu negócio ou vai direto ao que precisa.",
-                },
-                {
-                  num: "4",
-                  titulo: "Use como quiser",
-                  desc: "Estratégia, cobrança, conteúdo, dúvidas de gestão, um dia difícil. Ela está online agora.",
-                },
-              ].map((passo) => (
-                <div key={passo.num} className="flex gap-4">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold"
-                    style={{ background: "#D81B60", fontFamily: "var(--font-inter)" }}>
-                    {passo.num}
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold mb-0.5" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>
-                      {passo.titulo}
-                    </p>
-                    <p className="text-sm" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>
-                      {passo.desc}
-                    </p>
-                    {"extra" in passo && passo.extra}
+                ))}
+              </div>
+
+              <div className="mt-4 pt-4" style={{ borderTop: "1px solid #EFEFEF" }}>
+                <p className="text-xs font-semibold mb-2" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Mais pra testar</p>
+                <div className="space-y-1.5">
+                  {[
+                    "\"Como precificar meu novo pacote?\"",
+                    "\"Me dá um roteiro pra sessão de hoje\"",
+                    "\"Preciso de um argumento pra uma cliente indecisa\"",
+                    "\"Resumo do que eu tenho que fazer essa semana\"",
+                  ].map((ex) => (
+                    <div key={ex} className="flex items-start gap-2">
+                      <ArrowRight size={11} style={{ color: "#D81B60", flexShrink: 0, marginTop: "3px" }} />
+                      <p className="text-sm italic" style={{ fontFamily: "var(--font-inter)", color: "#9E9E9E" }}>{ex}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Coluna direita: mockup celular */}
+            <div className="sticky top-6">
+              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ fontFamily: "var(--font-inter)", color: "#BDBDBD" }}>Como fica a conversa</p>
+              <div className="rounded-[2rem] p-2 shadow-xl" style={{ background: "#2C2C2C" }}>
+                <div className="rounded-[1.6rem] overflow-hidden" style={{ background: "#ECE5DD" }}>
+                  {/* Header WhatsApp */}
+                  <div className="flex items-center gap-2.5 px-3 py-2.5" style={{ background: "#2C2C2C" }}>
+                    <div className="relative w-8 h-8 flex-shrink-0 rounded-full overflow-hidden">
+                      <Image src="/diffy-personagem.jpg" alt="Diffy" fill className="object-cover object-top" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: "#fff" }}>Diffy</p>
+                      <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.45)" }}>online agora</p>
+                    </div>
+                  </div>
+                  {/* Mensagens */}
+                  <div className="p-2.5 space-y-1.5" style={{ minHeight: "260px" }}>
+                    <div className="flex justify-center my-1.5">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.07)", color: "rgba(0,0,0,0.4)" }}>Hoje</span>
+                    </div>
+                    {conversaMockup.map((msg, i) => (
+                      <div key={i} className={`flex ${msg.lado === "inedita" ? "justify-end" : "justify-start"}`}>
+                        <div className="px-2.5 py-1.5 shadow-sm" style={{
+                          background: msg.lado === "inedita" ? "#DCF8C6" : "#fff",
+                          borderRadius: msg.lado === "inedita" ? "10px 10px 3px 10px" : "10px 10px 10px 3px",
+                          maxWidth: "83%",
+                        }}>
+                          <p className="text-[11px] leading-snug" style={{ color: "rgba(0,0,0,0.85)", fontFamily: "var(--font-inter)" }}>{msg.texto}</p>
+                          <div className={`flex items-center gap-0.5 mt-0.5 ${msg.lado === "inedita" ? "justify-end" : "justify-start"}`}>
+                            <span className="text-[9px]" style={{ color: "rgba(0,0,0,0.35)" }}>{msg.hora}</span>
+                            {msg.lado === "inedita" && <CheckCheck size={10} style={{ color: "#53BDEB" }} />}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Input */}
+                  <div className="flex items-center gap-1.5 mx-2 mb-2 px-3 py-1.5 rounded-full" style={{ background: "#fff" }}>
+                    <p className="flex-1 text-[10px]" style={{ color: "rgba(0,0,0,0.3)" }}>Mensagem</p>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "#D81B60" }}>
+                      <MessageCircle size={11} className="text-white" />
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-            <div className="mt-5 pt-5" style={{ borderTop: "1px solid #EFEFEF" }}>
-              <p className="text-xs" style={{ fontFamily: "var(--font-inter)", color: "#BDBDBD" }}>
-                Prefere começar pela plataforma?
-              </p>
-              <Link href="/conversar" className="inline-flex items-center gap-1.5 text-sm font-semibold mt-1"
-                style={{ color: "#D81B60", fontFamily: "var(--font-inter)" }}>
-                <MessageCircle size={14} /> Abrir chat na plataforma <ArrowRight size={13} />
-              </Link>
+              </div>
+              <p className="text-[11px] text-center mt-3" style={{ color: "#BDBDBD", fontFamily: "var(--font-inter)" }}>No celular que você já usa</p>
             </div>
           </div>
         </div>
