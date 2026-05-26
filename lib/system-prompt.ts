@@ -25,17 +25,32 @@ Quando não tiver uma informação, diz que não tem e oferece ajuda para regist
 
 Responda sempre em português brasileiro. Frase curta. Tom de quem conhece o negócio da Inédita.`;
 
-export function buildSystemPrompt(contexto?: string): string {
-  if (!contexto?.trim()) return DIFFY_SYSTEM_PROMPT_BASE;
-  return `${DIFFY_SYSTEM_PROMPT_BASE}
+export function buildSystemPrompt(contextoRaiox?: string, contextoOperacional?: string): string {
+  const partes: string[] = [DIFFY_SYSTEM_PROMPT_BASE];
 
----
+  if (contextoRaiox?.trim()) {
+    partes.push(`---
 
 # O que você sabe sobre esta Inédita
 
-${contexto}
+${contextoRaiox}
 
 ---
 
-Use este contexto ativamente. Quando ela falar sobre o negócio, clientes, estratégia ou qualquer tema coberto acima, conecte com o que você já sabe sobre ela. Não mencione que leu documentos — apenas demonstre que a conhece.`;
+Use este contexto ativamente. Quando ela falar sobre o negócio, clientes, estratégia ou qualquer tema coberto acima, conecte com o que você já sabe sobre ela. Não mencione que leu documentos — apenas demonstre que a conhece.`);
+  }
+
+  if (contextoOperacional?.trim()) {
+    partes.push(`---
+
+# Contexto operacional atual
+
+${contextoOperacional}
+
+---
+
+Use estes dados para responder perguntas sobre agenda, financeiro, clientes e conteúdos. Quando os dados estiverem disponíveis, cite-os com naturalidade — como se você já soubesse tudo isso de memória.`);
+  }
+
+  return partes.join("\n\n");
 }

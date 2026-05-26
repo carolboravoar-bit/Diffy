@@ -68,6 +68,9 @@ export default function ConfiguracoesPage() {
 
   // Perfil
   const [nome, setNome] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [salvandoPerfil, setSalvandoPerfil] = useState(false);
+  const [perfilSalvo, setPerfilSalvo] = useState(false);
 
   useEffect(() => {
     carregarContexto();
@@ -93,6 +96,8 @@ export default function ConfiguracoesPage() {
     const res = await fetch("/api/meu-contexto");
     const data = await res.json();
     setContexto(data.contexto_pessoal ?? "");
+    if (data.nome) setNome(data.nome);
+    if (data.whatsapp) setWhatsapp(data.whatsapp);
   }
 
   async function carregarDocs() {
@@ -353,11 +358,40 @@ export default function ConfiguracoesPage() {
                   onBlur={(e) => (e.currentTarget.style.borderColor = "#E8E8E8")}
                 />
               </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-widest mb-2 text-gray-400"
+                  style={{ fontFamily: "var(--font-inter)" }}>WhatsApp</label>
+                <input
+                  type="tel"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  placeholder="+55 11 99999-9999"
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
+                  style={{ background: "#F5F5F5", border: "1px solid #E8E8E8", fontFamily: "var(--font-inter)", color: "#2C2C2C" }}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = "#D81B60")}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "#E8E8E8")}
+                />
+                <p className="text-xs mt-1.5" style={{ color: "#9E9E9E", fontFamily: "var(--font-inter)" }}>
+                  Com código do país, ex: +5511999999999. A Diffy usa esse número para te enviar mensagens.
+                </p>
+              </div>
               <button
-                className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-                style={{ background: "#D81B60", fontFamily: "var(--font-inter)" }}
+                onClick={async () => {
+                  setSalvandoPerfil(true);
+                  await fetch("/api/meu-contexto", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome, whatsapp }),
+                  });
+                  setSalvandoPerfil(false);
+                  setPerfilSalvo(true);
+                  setTimeout(() => setPerfilSalvo(false), 2500);
+                }}
+                disabled={salvandoPerfil}
+                className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-60"
+                style={{ background: perfilSalvo ? "#2E7D32" : "#D81B60", fontFamily: "var(--font-inter)" }}
               >
-                Salvar alterações
+                {perfilSalvo ? "Salvo!" : salvandoPerfil ? "Salvando..." : "Salvar alterações"}
               </button>
             </div>
           </div>

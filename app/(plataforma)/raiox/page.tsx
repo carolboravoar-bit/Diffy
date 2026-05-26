@@ -1,45 +1,100 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Pill } from "@/app/components/Pill";
 import { RocketIcon } from "@/app/components/RocketIcon";
 
-type StatusRaiox = "vazio" | "uploading" | "processando" | "ativo";
-
-const dimensoesMock = [
-  { label: "Conceito Estratégico", valor: "Diferenciação pelo método próprio de transformação comportamental" },
-  { label: "Público-Alvo", valor: "Empreendedoras solo, 28-45 anos, com negócio estabelecido mas sem clareza estratégica" },
-  { label: "Diferenciação Principal", valor: "Única metodologia que combina comportamento com posicionamento de preço premium" },
-  { label: "Tom de Voz", valor: "Direto, quente, sem enrolação, linguagem feminina e empoderada" },
-  { label: "Problema que Resolve", valor: "Empreendedora que cobra barato por não saber comunicar seu real valor" },
-  { label: "Resultado Prometido", valor: "Cobrar 3x mais pelos mesmos serviços com mais confiança e menos desgaste" },
-  { label: "Promessa Única", valor: "Em 90 dias você sabe exatamente o que te diferencia e cobra pelo que vale" },
-];
+type StatusRaiox = "carregando" | "vazio" | "uploading" | "processando" | "ativo";
 
 export default function RaioXPage() {
-  const [status, setStatus] = useState<StatusRaiox>("vazio");
-  const [progresso, setProgresso] = useState(0);
+  const [status, setStatus] = useState<StatusRaiox>("carregando");
+  const [textoExtraido, setTextoExtraido] = useState<string>("");
+  const [erro, setErro] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  function simularUpload() {
-    setStatus("uploading");
-    setProgresso(0);
-    const interval = setInterval(() => {
-      setProgresso((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setStatus("processando");
-          setTimeout(() => setStatus("ativo"), 2500);
-          return 100;
+  const checarStatus = useCallback(async () => {
+    try {
+      const res = await fetch("/api/raiox/status");
+      const data = await res.json();
+      if (data.status === "ativo") {
+        setTextoExtraido(data.texto_extraido ?? "");
+        setStatus("ativo");
+        if (pollingRef.current) {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
         }
-        return prev + 8;
-      });
-    }, 120);
+      } else if (data.status === "processando") {
+        setStatus("processando");
+      } else {
+        setStatus("vazio");
+      }
+    } catch {
+      setStatus("vazio");
+    }
+  }, []);
+
+  useEffect(() => {
+    checarStatus();
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, [checarStatus]);
+
+  async function handleArquivo(e: React.ChangeEvent<HTMLInputElement>) {
+    const arquivo = e.target.files?.[0];
+    if (!arquivo) return;
+
+    setErro("");
+    setStatus("uploading");
+
+    const formData = new FormData();
+    formData.append("arquivo", arquivo);
+
+    const res = await fetch("/api/raiox/upload", { method: "POST", body: formData });
+
+    if (!res.ok) {
+      const data = await res.json();
+      setErro(data.error ?? "Erro ao subir arquivo.");
+      setStatus("vazio");
+      return;
+    }
+
+    setStatus("processando");
+    pollingRef.current = setInterval(checarStatus, 3000);
+  }
+
+  async function substituir() {
+    await fetch("/api/raiox/status", { method: "DELETE" });
+    setTextoExtraido("");
+    setStatus("vazio");
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+  }
+
+  if (status === "carregando") {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="flex gap-2">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="w-3 h-3 rounded-full"
+              style={{
+                background: "#D81B60",
+                animation: `twinkle 1.2s ease-in-out ${i * 0.2}s infinite`,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="flex-1 px-6 md:px-10 py-8 overflow-y-auto">
-      {/* Header */}
       <div className="mb-8">
         <Pill label="RAIOX DA DIFERENCIAÇÃO" />
         <h1
@@ -53,21 +108,28 @@ export default function RaioXPage() {
           style={{ fontFamily: "var(--font-inter)", fontSize: "15px" }}
         >
           Quando você sobe o RaioX, a Diffy ativa o modo estratégico e passa a responder
-          como conhecedora real do teu negócio.
+          como conhecedora real do seu negócio.
         </p>
       </div>
 
       {status === "vazio" && (
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Upload */}
           <div>
             <input
               ref={inputRef}
               type="file"
-              accept=".pdf"
+              accept=".pdf,.txt,.md"
               className="hidden"
-              onChange={simularUpload}
+              onChange={handleArquivo}
             />
+            {erro && (
+              <p
+                className="mb-3 text-sm text-red-600"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                {erro}
+              </p>
+            )}
             <div
               className="rounded-2xl p-10 text-center cursor-pointer transition-all hover:border-pink-300"
               style={{
@@ -99,12 +161,11 @@ export default function RaioXPage() {
                 className="text-xs font-semibold"
                 style={{ fontFamily: "var(--font-inter)", color: "#D81B60" }}
               >
-                Apenas arquivos PDF
+                PDF, TXT ou MD — até 10MB
               </span>
             </div>
           </div>
 
-          {/* Explicação dos modos */}
           <div className="space-y-4">
             <h2
               className="text-lg font-bold"
@@ -172,26 +233,24 @@ export default function RaioXPage() {
         >
           <RocketIcon size={40} className="mx-auto mb-4 animate-float" />
           <h2
-            className="text-lg font-bold mb-2"
+            className="text-lg font-bold mb-4"
             style={{ fontFamily: "var(--font-playfair)", color: "#2C2C2C" }}
           >
             Subindo o RaioX...
           </h2>
           <div
-            className="w-full h-2 rounded-full mb-2 overflow-hidden"
+            className="w-full h-2 rounded-full overflow-hidden"
             style={{ background: "#F5F5F5" }}
           >
             <div
-              className="h-full rounded-full transition-all"
+              className="h-full rounded-full"
               style={{
-                width: `${progresso}%`,
+                width: "60%",
                 background: "linear-gradient(to right, #D81B60, #EC407A)",
+                animation: "progress-pulse 1.5s ease-in-out infinite",
               }}
             />
           </div>
-          <p className="text-sm text-gray-400" style={{ fontFamily: "var(--font-inter)" }}>
-            {progresso}%
-          </p>
         </div>
       )}
 
@@ -221,12 +280,14 @@ export default function RaioXPage() {
           <p className="text-sm text-gray-500" style={{ fontFamily: "var(--font-inter)" }}>
             Identificando conceito estratégico, as 7 dimensões e sua diferenciação principal...
           </p>
+          <p className="text-xs text-gray-400 mt-3" style={{ fontFamily: "var(--font-inter)" }}>
+            Pode levar alguns instantes. Esta página atualiza automaticamente.
+          </p>
         </div>
       )}
 
       {status === "ativo" && (
         <div>
-          {/* Badge modo estratégico */}
           <div
             className="flex items-center gap-3 p-4 rounded-2xl mb-8 max-w-lg"
             style={{ background: "#FCE4EC", border: "1px solid #D81B60" }}
@@ -248,33 +309,27 @@ export default function RaioXPage() {
             </div>
           </div>
 
-          {/* Dimensões extraídas */}
-          <div className="grid gap-4">
-            {dimensoesMock.map((d, i) => (
-              <div
-                key={i}
-                className="p-5 rounded-xl"
-                style={{ background: "#fff", border: "1px solid #E8E8E8" }}
-              >
-                <p
-                  className="text-xs font-semibold uppercase tracking-widest mb-1"
-                  style={{ fontFamily: "var(--font-inter)", color: "#D81B60" }}
-                >
-                  {d.label}
-                </p>
-                <p
-                  className="text-sm text-gray-700"
-                  style={{ fontFamily: "var(--font-inter)", lineHeight: 1.7 }}
-                >
-                  {d.valor}
-                </p>
-              </div>
-            ))}
+          <div
+            className="p-6 rounded-2xl mb-6"
+            style={{ background: "#fff", border: "1px solid #E8E8E8" }}
+          >
+            <p
+              className="text-xs font-semibold uppercase tracking-widest mb-4"
+              style={{ fontFamily: "var(--font-inter)", color: "#D81B60" }}
+            >
+              Conteúdo do seu RaioX
+            </p>
+            <pre
+              className="text-sm text-gray-700 whitespace-pre-wrap"
+              style={{ fontFamily: "var(--font-inter)", lineHeight: 1.8 }}
+            >
+              {textoExtraido}
+            </pre>
           </div>
 
           <button
-            onClick={() => setStatus("vazio")}
-            className="mt-6 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            onClick={substituir}
+            className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
             style={{ fontFamily: "var(--font-inter)" }}
           >
             Substituir o RaioX →

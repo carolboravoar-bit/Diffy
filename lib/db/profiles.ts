@@ -6,6 +6,7 @@ export interface Profile {
   id: string;
   nome: string | null;
   email: string | null;
+  whatsapp: string | null;
   role: Role;
   contexto_pessoal: string | null;
   created_at: string;
@@ -34,13 +35,14 @@ export async function listarIneditas(): Promise<Profile[]> {
 export async function criarInedita(
   email: string,
   senha: string,
-  nome: string
+  nome: string,
+  whatsapp?: string
 ): Promise<{ id: string } | { error: string }> {
   const supabase = createAdminClient();
   const { data, error } = await supabase.auth.admin.createUser({
     email,
     password: senha,
-    user_metadata: { nome },
+    user_metadata: { nome, whatsapp },
     email_confirm: true,
   });
   if (error) return { error: error.message };
@@ -55,6 +57,11 @@ export async function atualizarNome(id: string, nome: string): Promise<void> {
 export async function atualizarContextoPessoal(id: string, contexto_pessoal: string): Promise<void> {
   const supabase = createAdminClient();
   await supabase.from("profiles").update({ contexto_pessoal }).eq("id", id);
+}
+
+export async function atualizarWhatsapp(id: string, whatsapp: string): Promise<void> {
+  const supabase = createAdminClient();
+  await supabase.from("profiles").update({ whatsapp }).eq("id", id);
 }
 
 export async function deletarInedita(id: string): Promise<void> {
