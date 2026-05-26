@@ -10,7 +10,8 @@ import {
   Circle, ChevronDown, ChevronUp, ArrowRight, Smartphone, Copy, Check,
 } from "lucide-react";
 
-const WHATSAPP_NUMBER = "+55 11 99999-9999"; // trocar pelo número real do Twilio
+const WHATSAPP_NUMBER = "+1 (415) 523-8886"; // Número do sandbox Twilio WhatsApp
+const WHATSAPP_JOIN_CODE = "join "; // completar com a palavra-chave do sandbox Twilio
 
 const modulos = [
   {
@@ -237,11 +238,22 @@ export default function DecolagemPage() {
                 },
                 {
                   num: "2",
-                  titulo: "Mande \"Oi Diffy\" no WhatsApp",
-                  desc: "Ela já sabe quem você é. Apresente-se, fale do seu negócio ou vai direto ao que precisa.",
+                  titulo: "Ative a conversa",
+                  desc: "Mande essa mensagem exata no WhatsApp para a Diffy te reconhecer:",
+                  extra: (
+                    <div className="flex items-center gap-3 mt-2 p-3 rounded-xl" style={{ background: "#F7F7F5" }}>
+                      <span className="text-sm font-semibold font-mono" style={{ fontFamily: "monospace", color: "#2C2C2C" }}>{WHATSAPP_JOIN_CODE}</span>
+                      <CopyButton text={WHATSAPP_JOIN_CODE} />
+                    </div>
+                  ),
                 },
                 {
                   num: "3",
+                  titulo: "Mande \"Oi Diffy\"",
+                  desc: "Ela já sabe quem você é. Apresente-se, fale do seu negócio ou vai direto ao que precisa.",
+                },
+                {
+                  num: "4",
                   titulo: "Use como quiser",
                   desc: "Estratégia, cobrança, conteúdo, dúvidas de gestão, um dia difícil. Ela está online agora.",
                 },
