@@ -257,6 +257,25 @@ export default function DecolagemPage() {
 
       <div className="px-8 py-8 max-w-4xl space-y-10">
 
+        {/* RaioX — primeiro passo real */}
+        <div className="rounded-2xl p-6 flex items-center gap-6" style={{ background: "linear-gradient(135deg, #1A0010 0%, #2D0020 100%)", border: "1px solid #D81B60" }}>
+          <div className="text-4xl flex-shrink-0">🔍</div>
+          <div className="flex-1">
+            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: "#D81B60", fontFamily: "var(--font-inter)" }}>Faça isso primeiro</p>
+            <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair)" }}>Suba o seu RaioX</h3>
+            <p className="text-sm text-gray-300 leading-relaxed" style={{ fontFamily: "var(--font-inter)" }}>
+              Sem o RaioX, a Diffy não sabe nada sobre você e responde de forma genérica. Com ele, ela conhece seu negócio, seus diferenciais e fala a sua língua.
+            </p>
+          </div>
+          <a
+            href="/raiox"
+            className="flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-white text-sm transition-all hover:opacity-90"
+            style={{ background: "#D81B60", fontFamily: "var(--font-inter)", whiteSpace: "nowrap" }}
+          >
+            Subir agora →
+          </a>
+        </div>
+
         {/* WhatsApp — como instalar */}
         <div id="whatsapp">
           <h2 className="text-lg font-bold mb-4" style={{ fontFamily: "var(--font-playfair)", color: "#2C2C2C" }}>

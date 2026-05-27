@@ -31,12 +31,19 @@ export function CapturaRapida() {
     setEnviado(false);
   }
 
-  function enviar() {
+  async function enviar() {
     if (!texto.trim()) return;
     setEnviado(true);
-    setTimeout(() => {
-      fechar();
-    }, 1800);
+    try {
+      await fetch("/api/captura", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ texto: texto.trim(), categoria }),
+      });
+    } catch {
+      // Falha silenciosa — não bloqueia a UX
+    }
+    setTimeout(() => fechar(), 1800);
   }
 
   const cat = categorias.find((c) => c.key === categoria)!;
