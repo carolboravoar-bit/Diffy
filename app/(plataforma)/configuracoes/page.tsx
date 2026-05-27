@@ -460,7 +460,7 @@ export default function ConfiguracoesPage() {
               <RocketIcon size={32} />
             </div>
             <p className="text-gray-300 text-sm mb-4" style={{ fontFamily: "var(--font-inter)" }}>
-              R$ 88/mês · Próxima cobrança: 15/06/2026
+              Acesso Beta · Gratuito por tempo limitado
             </p>
             <div className="space-y-2">
               {["RaioX ativado", "Chat ilimitado no WhatsApp", "Painel web completo", "Financeiro, clientes, agenda", "Suporte por WhatsApp"].map((f) => (

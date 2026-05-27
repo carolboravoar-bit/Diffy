@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Send, Mic, Paperclip, ChevronDown } from "lucide-react";
+import { Send, ChevronDown } from "lucide-react";
 
 type Mensagem = {
   id: string;
@@ -379,13 +379,6 @@ export default function ConversarPage() {
         className="px-4 pb-5 pt-3 flex items-end gap-3 flex-shrink-0"
         style={{ background: "#ffffff" }}
       >
-        <button
-          className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:bg-gray-50"
-          style={{ border: "1px solid #E8E8E8" }}
-        >
-          <Paperclip size={16} style={{ color: "#BDBDBD" }} />
-        </button>
-
         <div
           className="flex-1 flex items-end gap-2 rounded-2xl px-4 py-2.5 transition-all"
           style={{ background: "#F7F7F5", border: "1.5px solid #E8E8E8" }}
@@ -404,12 +397,6 @@ export default function ConversarPage() {
             className="flex-1 resize-none text-sm outline-none leading-relaxed bg-transparent"
             style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C", maxHeight: "120px" }}
           />
-          <button
-            className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all"
-            style={{ color: "#BDBDBD" }}
-          >
-            <Mic size={15} />
-          </button>
         </div>
 
         <button
