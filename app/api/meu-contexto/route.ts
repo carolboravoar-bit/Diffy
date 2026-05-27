@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getProfile, atualizarContextoPessoal, atualizarNome, atualizarWhatsapp } from "@/lib/db/profiles";
+import { getProfile, atualizarContextoPessoal, atualizarNome, atualizarWhatsapp, atualizarEmail } from "@/lib/db/profiles";
 
 export async function GET() {
   const supabase = await createClient();
@@ -31,6 +31,9 @@ export async function POST(request: NextRequest) {
   }
   if (typeof body.whatsapp === "string") {
     await atualizarWhatsapp(user.id, body.whatsapp.trim());
+  }
+  if (typeof body.email_real === "string" && body.email_real.includes("@")) {
+    await atualizarEmail(user.id, body.email_real.trim());
   }
 
   return NextResponse.json({ ok: true });

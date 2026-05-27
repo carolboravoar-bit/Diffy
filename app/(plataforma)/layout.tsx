@@ -1,5 +1,6 @@
 import { Sidebar } from "@/app/components/plataforma/Sidebar";
 import { CapturaRapida } from "@/app/components/plataforma/CapturaRapida";
+import { BannerEmailTemporario } from "@/app/components/plataforma/BannerEmailTemporario";
 
 export default function PlataformaLayout({
   children,
@@ -10,6 +11,7 @@ export default function PlataformaLayout({
     <div className="flex min-h-screen" style={{ background: "#F7F7F5" }}>
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <BannerEmailTemporario />
         {children}
       </div>
       <CapturaRapida />

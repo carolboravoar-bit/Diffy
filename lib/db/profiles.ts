@@ -64,6 +64,11 @@ export async function atualizarWhatsapp(id: string, whatsapp: string): Promise<v
   await supabase.from("profiles").update({ whatsapp }).eq("id", id);
 }
 
+export async function atualizarEmail(id: string, email: string): Promise<void> {
+  const supabase = createAdminClient();
+  await supabase.from("profiles").update({ email }).eq("id", id);
+}
+
 export async function deletarInedita(id: string): Promise<void> {
   const supabase = createAdminClient();
   await supabase.auth.admin.deleteUser(id);
