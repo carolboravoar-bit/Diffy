@@ -130,7 +130,23 @@ export default function LoginPage() {
           </form>
 
           <p
-            className="mt-6 text-center text-sm text-gray-500"
+            className="mt-4 text-center text-xs text-gray-600"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            Esqueceu a senha? Fale com a Carol no{" "}
+            <a
+              href="https://wa.me/5545991259107"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium"
+              style={{ color: "#D81B60" }}
+            >
+              WhatsApp
+            </a>
+          </p>
+
+          <p
+            className="mt-3 text-center text-sm text-gray-500"
             style={{ fontFamily: "var(--font-inter)" }}
           >
             Ainda não tem conta?{" "}
