@@ -264,12 +264,12 @@ export default function DecolagemPage() {
           </h2>
 
           {/* Aviso sandbox */}
-          <div className="flex gap-3 p-4 rounded-xl mb-6" style={{ background: "#FFF8E1", border: "1px solid #FFE082" }}>
-            <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold text-white" style={{ background: "#F9A825" }}>!</div>
+          <div className="flex gap-3 p-4 rounded-xl mb-6" style={{ background: "#FCE4EC", border: "1px solid #F48FB1" }}>
+            <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold text-white" style={{ background: "#D81B60" }}>!</div>
             <div>
-              <p className="text-sm font-semibold mb-0.5" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Uma etapa rápida antes de começar</p>
+              <p className="text-sm font-semibold mb-1" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Passo obrigatório antes de começar no WhatsApp</p>
               <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>
-                A Diffy ainda está em fase de testes e usa um número compartilhado. Por isso você precisa fazer um cadastro de 5 segundos no WhatsApp antes de começar. É só uma vez.
+                Como estamos em versão Beta, é preciso fazer uma ativação rápida no WhatsApp antes de começar a conversar. São só dois cliques — siga os passos abaixo.
               </p>
             </div>
           </div>
@@ -317,8 +317,8 @@ export default function DecolagemPage() {
               <div className="flex gap-4 items-start mb-8">
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 text-white" style={{ background: "#25D366", fontFamily: "var(--font-inter)" }}>✓</div>
                 <div className="flex-1">
-                  <p className="text-base font-semibold mb-1" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Pronto — a Diffy responde e a conversa começa</p>
-                  <p className="text-sm leading-snug" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>De agora em diante é só mandar mensagem normalmente. Texto ou áudio. Ela já sabe quem você é e o que é o seu negócio.</p>
+                  <p className="text-base font-semibold mb-1" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>Pronto — agora é só mandar mensagem!</p>
+                  <p className="text-sm leading-snug" style={{ fontFamily: "var(--font-inter)", color: "#6B6B6B" }}>A Diffy vai responder direto no WhatsApp. Se em algum momento parar de funcionar, basta repetir os passos 1 e 2 para reativar.</p>
                 </div>
               </div>
 
