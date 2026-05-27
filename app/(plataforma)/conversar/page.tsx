@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Send, ChevronDown } from "lucide-react";
+import { Send, ChevronDown, Mic, MicOff } from "lucide-react";
 
 type Mensagem = {
   id: string;
@@ -125,6 +125,9 @@ export default function ConversarPage() {
   const [enviando, setEnviando] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [grupoSugestao, setGrupoSugestao] = useState(0);
+  const [gravando, setGravando] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -247,6 +250,42 @@ export default function ConversarPage() {
       e.preventDefault();
       enviar();
     }
+  }
+
+  function toggleMicrofone() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = window as any;
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+
+    if (!SR) {
+      alert("Seu navegador não suporta reconhecimento de voz. Use o Chrome.");
+      return;
+    }
+
+    if (gravando && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setGravando(false);
+      return;
+    }
+
+    const recognition = new SR();
+    recognition.lang = "pt-BR";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = (e: any) => {
+      const texto = e.results[0][0].transcript;
+      setInput((prev) => (prev ? prev + " " + texto : texto));
+      inputRef.current?.focus();
+    };
+
+    recognition.onend = () => setGravando(false);
+    recognition.onerror = () => setGravando(false);
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setGravando(true);
   }
 
   const grupo = sugestoesPorContexto[grupoSugestao];
@@ -392,11 +431,22 @@ export default function ConversarPage() {
               e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Manda mensagem pra Diffy..."
+            placeholder={gravando ? "Ouvindo..." : "Manda mensagem pra Diffy..."}
             rows={1}
             className="flex-1 resize-none text-sm outline-none leading-relaxed bg-transparent"
             style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C", maxHeight: "120px" }}
           />
+          <button
+            onClick={toggleMicrofone}
+            className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all"
+            style={{
+              color: gravando ? "#D81B60" : "#BDBDBD",
+              animation: gravando ? "pulse 1.2s infinite" : "none",
+            }}
+            title={gravando ? "Parar gravação" : "Falar com a Diffy"}
+          >
+            {gravando ? <MicOff size={15} /> : <Mic size={15} />}
+          </button>
         </div>
 
         <button
