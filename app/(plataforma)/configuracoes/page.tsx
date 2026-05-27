@@ -163,7 +163,6 @@ export default function ConfiguracoesPage() {
     { key: "documentos", label: "Documentos" },
     { key: "perfil", label: "Perfil" },
     { key: "integracoes", label: "Integrações" },
-    { key: "plano", label: "Plano" },
   ];
 
   return (

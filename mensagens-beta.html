@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mensagens Beta — Diffy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #F7F7F5;
+    color: #2C2C2C;
+    padding: 40px 20px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: #D81B60;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    color: #9E9E9E;
+    font-size: 14px;
+  }
+
+  .info-box {
+    background: #FCE4EC;
+    border: 1px solid #D81B60;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .info-box strong { color: #D81B60; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #EFEFEF;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .card-header {
+    background: #D81B60;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-header h2 {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .card-header .email-badge {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .message-box {
+    background: #F7F7F5;
+    margin: 16px;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    color: #2C2C2C;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+
+  .message-box:hover {
+    border-color: #D81B60;
+  }
+
+  .copy-hint {
+    font-size: 11px;
+    color: #9E9E9E;
+    text-align: right;
+    padding: 0 16px 14px;
+  }
+
+  .copied {
+    background: #E8F5E9;
+    color: #2E7D32;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-right: 16px;
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 14px;
+  }
+
+  .btn-copy {
+    background: #D81B60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .btn-copy:hover { opacity: 0.85; }
+
+  .tag-real {
+    background: #E8F5E9;
+    color: #2E7D32;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .tag-temp {
+    background: #FFF8E1;
+    color: #795548;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Mensagens Beta · Diffy</h1>
+  <p>Clique em "Copiar mensagem" e cole direto no WhatsApp</p>
+</div>
+
+<div class="info-box">
+  <strong>Senha unificada para todas:</strong> Inédita#2026<br>
+  <strong>Plataforma:</strong> diffy-nine.vercel.app<br>
+  <strong style="color:#2E7D32">✓ E-mail real</strong> = não precisa atualizar no app &nbsp;|&nbsp;
+  <strong style="color:#795548">⏳ E-mail temporário</strong> = vai aparecer aviso pra cadastrar o e-mail real quando ela entrar
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const ineditas = [
+  {
+    nome: "Cinara",
+    nomeCompleto: "Cinara Bastos",
+    login: "cinara@grupoview.com.br",
+    emailReal: true,
+  },
+  {
+    nome: "Karen",
+    nomeCompleto: "Karen Machado",
+    login: "karen@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Bruna",
+    nomeCompleto: "Bruna Toledo",
+    login: "bruna@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Aline",
+    nomeCompleto: "Aline Ponce",
+    login: "aline@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Alessandra",
+    nomeCompleto: "Alessandra Mossambani",
+    login: "alessandra@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Luiz",
+    nomeCompleto: "Luiz Hartmann",
+    login: "luiz@diffy.app",
+    emailReal: false,
+    masculino: true,
+  },
+  {
+    nome: "Mariele",
+    nomeCompleto: "Mariele Gehlen",
+    login: "marielegehlen@gmail.com",
+    emailReal: true,
+  },
+  {
+    nome: "Paty",
+    nomeCompleto: "Paty Valcarenghi",
+    login: "paty@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Bruna",
+    nomeCompleto: "Bruna Bondi",
+    login: "bruna.bondi@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Renata",
+    nomeCompleto: "Renata Micaela",
+    login: "renata@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Fernanda",
+    nomeCompleto: "Fernanda Rodrigues",
+    login: "fernanda@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Samantha",
+    nomeCompleto: "Samantha Bezerra",
+    login: "samantha@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Hortência",
+    nomeCompleto: "Hortência Carvalho",
+    login: "hortencia@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Tatiani",
+    nomeCompleto: "Tatiani Santos",
+    login: "tatiani@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Claudia",
+    nomeCompleto: "Claudia Sartori",
+    login: "claudia.sartori@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Claudia",
+    nomeCompleto: "Claudia Toledo",
+    login: "claudia.toledo@diffy.app",
+    emailReal: false,
+  },
+  {
+    nome: "Luiza",
+    nomeCompleto: "Luiza Franco",
+    login: "luiza@diffy.app",
+    emailReal: false,
+  },
+];
+
+function gerarMensagem(p) {
+  const emailInfo = p.emailReal
+    ? ""
+    : `\n⚠️ Quando você entrar, vai aparecer um aviso pedindo seu e-mail real. É só preencher e confirmar o link que chega pra você, assim você consegue recuperar a senha se precisar.`;
+
+  const bemVindo = p.masculino ? "Bem-vindo a bordo!" : "Bem-vinda a bordo!";
+
+  return `Oioi, ${p.nome}!! Estava ansiosa pra te enviar essa novidade!!
+
+A Diffy foi a primeira agente GPT que eu criei pra dar suporte pra vocês, e foi muito útil. Mas ouvindo cada vez mais vocês e movida pelo meu propósito de facilitar a vida de quem empreende com diferenciação, eu fui além: criei algo muito mais robusto e completo. Agora você tem uma copilota estratégica com IA que fica do seu lado no WhatsApp e num painel web, pronta pra te ajudar com clientes, agenda, financeiro, conteúdo e muito mais.
+
+Você está recebendo acesso em primeira mão, como parte do nosso Projeto Piloto. A Diffy ainda está em versão Beta, temos muita coisa linda planejada pra desenvolver, mas já tem bastante coisa funcionando pra você explorar!
+
+Quero muito saber o que você achou. Se encontrar qualquer detalhe estranho ou bug, me avisa aqui mesmo. Esse é exatamente o momento dos ajustes, e o seu feedback vale muuuuito pra mim. 🙏
+
+Seu acesso:
+🌐 https://diffy-nine.vercel.app/login
+📧 Login: ${p.login}
+🔐 Senha: Inédita#2026
+${emailInfo}
+${bemVindo} Essa é só a primeira das novidades incríveis que vêm por aí!!
+
+Sua Estrategista de Diferenciação, Carol Possani. 🚀`;
+}
+
+const grid = document.getElementById('grid');
+
+ineditas.forEach((p, i) => {
+  const msg = gerarMensagem(p);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="card-header">
+      <h2>${p.nomeCompleto}</h2>
+      <span class="email-badge">${p.login}</span>
+    </div>
+    <div class="message-box" id="msg-${i}">${msg}</div>
+    <div class="card-footer">
+      <span class="${p.emailReal ? 'tag-real' : 'tag-temp'}">${p.emailReal ? '✓ E-mail real' : '⏳ E-mail temporário'}</span>
+      <button class="btn-copy" onclick="copiar(${i}, '${p.nomeCompleto}')">Copiar mensagem</button>
+    </div>
+  `;
+  grid.appendChild(card);
+});
+
+function copiar(i, nome) {
+  const el = document.getElementById('msg-' + i);
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    const btn = el.closest('.card').querySelector('.btn-copy');
+    const original = btn.innerText;
+    btn.innerText = '✓ Copiado!';
+    btn.style.background = '#2E7D32';
+    setTimeout(() => {
+      btn.innerText = original;
+      btn.style.background = '#D81B60';
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>

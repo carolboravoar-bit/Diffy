@@ -24,12 +24,20 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Diffy — Sua Copilota Estratégica",
   description:
-    "A copilota estratégica que faltava no seu negócio. Mora no seu WhatsApp. Cuida do financeiro, do conteúdo, dos clientes e dos contratos. R$ 88 por mês.",
+    "Sua copilota estratégica com IA. Fica do seu lado no WhatsApp e num painel web, cuidando do negócio todos os dias.",
   openGraph: {
     title: "Diffy — Sua Copilota Estratégica",
     description:
-      "A primeira plataforma do Brasil pensada pra empreendedora solo. Funciona no WhatsApp. R$ 88/mês.",
+      "Sua copilota estratégica com IA. Fica do seu lado no WhatsApp e num painel web, cuidando do negócio todos os dias.",
     siteName: "Diffy",
+    images: [
+      {
+        url: "https://diffy-nine.vercel.app/diffy-personagem.jpg",
+        width: 400,
+        height: 400,
+        alt: "Diffy",
+      },
+    ],
   },
 };
 
