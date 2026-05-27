@@ -233,7 +233,7 @@ export default function DecolagemPage() {
   return (
     <div className="flex-1 overflow-y-auto">
       {/* Hero */}
-      <div className="px-8 pt-10 pb-8" style={{ background: "linear-gradient(135deg, #FCE4EC 0%, #fff 60%)", borderBottom: "1px solid #F8BBD0" }}>
+      <div className="px-4 pt-6 pb-6 md:px-8 md:pt-10 md:pb-8" style={{ background: "linear-gradient(135deg, #FCE4EC 0%, #fff 60%)", borderBottom: "1px solid #F8BBD0" }}>
         <div className="max-w-3xl">
           <div className="flex items-center gap-3 mb-4">
             <div className="relative w-12 h-12 flex-shrink-0 rounded-full overflow-hidden shadow-md">
@@ -255,11 +255,11 @@ export default function DecolagemPage() {
         </div>
       </div>
 
-      <div className="px-8 py-8 max-w-4xl space-y-10">
+      <div className="px-4 py-6 md:px-8 md:py-8 max-w-4xl space-y-10">
 
         {/* RaioX — primeiro passo real */}
-        <div className="rounded-2xl p-6 flex items-center gap-6" style={{ background: "linear-gradient(135deg, #1A0010 0%, #2D0020 100%)", border: "1px solid #D81B60" }}>
-          <div className="text-4xl flex-shrink-0">🔍</div>
+        <div className="rounded-2xl p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-6" style={{ background: "linear-gradient(135deg, #1A0010 0%, #2D0020 100%)", border: "1px solid #D81B60" }}>
+          <div className="text-4xl md:flex-shrink-0">🔍</div>
           <div className="flex-1">
             <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: "#D81B60", fontFamily: "var(--font-inter)" }}>Faça isso primeiro</p>
             <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair)" }}>Suba o seu RaioX</h3>
@@ -269,8 +269,8 @@ export default function DecolagemPage() {
           </div>
           <a
             href="/raiox"
-            className="flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-white text-sm transition-all hover:opacity-90"
-            style={{ background: "#D81B60", fontFamily: "var(--font-inter)", whiteSpace: "nowrap" }}
+            className="md:flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-white text-sm transition-all hover:opacity-90 text-center"
+            style={{ background: "#D81B60", fontFamily: "var(--font-inter)" }}
           >
             Subir agora →
           </a>
@@ -293,7 +293,7 @@ export default function DecolagemPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-[1fr_260px] gap-8 items-start" style={{ gridTemplateColumns: "1fr 260px" }}>
+          <div className="flex flex-col md:grid md:gap-8 md:items-start" style={{ gridTemplateColumns: "1fr 260px" }}>
             {/* Coluna esquerda: passos + exemplos */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest mb-5" style={{ fontFamily: "var(--font-inter)", color: "#BDBDBD" }}>Como ativar</p>
@@ -384,8 +384,8 @@ export default function DecolagemPage() {
               </div>
             </div>
 
-            {/* Coluna direita: mockup celular */}
-            <div className="sticky top-6">
+            {/* Coluna direita: mockup celular — oculto no mobile */}
+            <div className="hidden md:block sticky top-6">
               <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ fontFamily: "var(--font-inter)", color: "#BDBDBD" }}>Como fica a conversa</p>
               <div className="rounded-[2rem] p-2 shadow-xl" style={{ background: "#2C2C2C" }}>
                 <div className="rounded-[1.6rem] overflow-hidden" style={{ background: "#ECE5DD" }}>
@@ -447,7 +447,7 @@ export default function DecolagemPage() {
           </p>
 
           {/* Flow visual */}
-          <div className="grid grid-cols-3 gap-2 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6">
             <div className="p-4 rounded-xl text-center" style={{ background: "#1A1A1A" }}>
               <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#25D366" }}>
                 <MessageCircle size={18} className="text-white" />
@@ -497,7 +497,7 @@ export default function DecolagemPage() {
           <p className="text-sm mb-4" style={{ fontFamily: "var(--font-inter)", color: "#9E9E9E" }}>
             Explore no seu ritmo. Você não precisa usar tudo de uma vez.
           </p>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {modulos.map((m) => {
               const Icon = m.icon;
               return (

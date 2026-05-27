@@ -54,7 +54,7 @@ export function CapturaRapida() {
       {!open && (
         <button
           onClick={abrir}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-5 py-3.5 rounded-full text-white font-semibold text-sm shadow-xl transition-all hover:scale-105 hover:opacity-95"
+          className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-40 flex items-center gap-2.5 px-5 py-3.5 rounded-full text-white font-semibold text-sm shadow-xl transition-all hover:scale-105 hover:opacity-95"
           style={{
             background: "#D81B60",
             fontFamily: "var(--font-inter)",
@@ -75,7 +75,7 @@ export function CapturaRapida() {
             onClick={fechar}
           />
           <div
-            className="fixed bottom-6 right-6 z-50 w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl"
+            className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50 w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl"
             style={{ background: "#fff", border: "1px solid #E8E8E8" }}
           >
             {enviado ? (
