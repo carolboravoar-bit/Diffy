@@ -7,6 +7,11 @@ const ROTAS_ADMIN = ["/admin"];
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Rotas de API nunca precisam de auth no middleware — têm sua própria verificação
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next({ request });
+  }
+
   if (ROTAS_PUBLICAS.some((r) => pathname === r || pathname.startsWith(r + "/"))) {
     return NextResponse.next({ request });
   }
