@@ -19,26 +19,47 @@ export async function salvarMensagem(
   await supabase.from("mensagens").insert({ numero_whatsapp, role, conteudo });
 }
 
+// Busca histórico mesclando dois identificadores (UUID da web + número WhatsApp)
+// Garante que a Diffy vê toda a conversa independente do canal
 export async function buscarHistorico(
-  numero_whatsapp: string,
-  limite = 20
+  id1: string,
+  limite = 20,
+  id2: string | null = null
 ): Promise<{ role: Role; content: string }[]> {
   const supabase = createAdminClient();
-  const { data } = await supabase
-    .from("mensagens")
-    .select("role, conteudo")
-    .eq("numero_whatsapp", numero_whatsapp)
+
+  let query = supabase.from("mensagens").select("role, conteudo, created_at");
+
+  if (id2) {
+    query = query.or(`numero_whatsapp.eq.${id1},numero_whatsapp.eq.${id2}`);
+  } else {
+    query = query.eq("numero_whatsapp", id1);
+  }
+
+  const { data } = await query
     .order("created_at", { ascending: true })
     .limit(limite);
 
   return (data ?? []).map((m) => ({ role: m.role, content: m.conteudo }));
 }
 
-export async function buscarTodas(limite = 100): Promise<MensagemDB[]> {
+// Busca mensagens completas de uma usuária (web + WhatsApp mesclados)
+export async function buscarMensagensUsuario(
+  id1: string,
+  id2: string | null,
+  limite = 100
+): Promise<MensagemDB[]> {
   const supabase = createAdminClient();
-  const { data } = await supabase
-    .from("mensagens")
-    .select("*")
+
+  let query = supabase.from("mensagens").select("*");
+
+  if (id2) {
+    query = query.or(`numero_whatsapp.eq.${id1},numero_whatsapp.eq.${id2}`);
+  } else {
+    query = query.eq("numero_whatsapp", id1);
+  }
+
+  const { data } = await query
     .order("created_at", { ascending: true })
     .limit(limite);
 

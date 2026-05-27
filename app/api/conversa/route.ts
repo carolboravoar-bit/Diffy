@@ -1,7 +1,25 @@
 import { NextResponse } from "next/server";
-import { buscarTodas } from "@/lib/db/mensagens";
+import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { buscarMensagensUsuario } from "@/lib/db/mensagens";
 
 export async function GET() {
-  const mensagens = await buscarTodas(100);
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ mensagens: [] });
+
+  const admin = createAdminClient();
+  const { data: profile } = await admin
+    .from("profiles")
+    .select("whatsapp")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const mensagens = await buscarMensagensUsuario(
+    user.id,
+    profile?.whatsapp ?? null,
+    100
+  );
+
   return NextResponse.json({ mensagens });
 }

@@ -159,10 +159,16 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     const inedita_id = user?.id ?? "web";
 
+    // Busca número de WhatsApp para mesclar histórico dos dois canais
+    const admin = createAdminClient();
+    const { data: profile } = user
+      ? await admin.from("profiles").select("whatsapp").eq("id", user.id).maybeSingle()
+      : { data: null };
+
     const [contextoRaiox, contextoOperacional, historico] = await Promise.all([
       user ? buscarContextoInedita(inedita_id) : Promise.resolve(""),
       user ? buscarContextoOperacional(inedita_id) : Promise.resolve(""),
-      buscarHistorico(inedita_id, 20),
+      buscarHistorico(inedita_id, 20, profile?.whatsapp ?? null),
     ]);
 
     await salvarMensagem(inedita_id, "user", mensagem.trim());

@@ -183,9 +183,9 @@ export async function POST(request: NextRequest) {
     // Identifica inédita pelo número de WhatsApp
     const inedita = await buscarInedita(de);
 
-    // Busca histórico e contexto em paralelo
+    // Busca histórico mesclado (WhatsApp + web) e contexto em paralelo
     const [historico, contextoRaiox, contextoOperacional] = await Promise.all([
-      buscarHistorico(de, 20),
+      buscarHistorico(de, 20, inedita?.id ?? null),
       inedita ? buscarContextoInedita(inedita.id) : Promise.resolve(""),
       inedita ? buscarContextoOperacional(inedita.id) : Promise.resolve(""),
     ]);
