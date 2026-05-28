@@ -7,7 +7,11 @@
   "crons": [
     {
       "path": "/api/cron/resumo-diario",
-      "schedule": "0 0 * * *"
+      "schedule": "0 11 * * *"
+    },
+    {
+      "path": "/api/cron/clientes-inativos",
+      "schedule": "0 14 * * 1"
     }
   ]
 }

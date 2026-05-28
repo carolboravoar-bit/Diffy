@@ -32,14 +32,14 @@ export default function PainelPage() {
   useEffect(() => {
     const hoje = new Date().toISOString().split("T")[0];
     Promise.all([
-      fetch("/api/clientes").then((r) => r.json()).catch(() => []),
-      fetch(`/api/agendamentos?data=${hoje}`).then((r) => r.json()).catch(() => []),
-      fetch("/api/lancamentos").then((r) => r.json()).catch(() => []),
+      fetch("/api/clientes").then((r) => r.json()).catch(() => ({ clientes: [] })),
+      fetch(`/api/agendamentos?data_inicio=${hoje}&data_fim=${hoje}`).then((r) => r.json()).catch(() => ({ agendamentos: [] })),
+      fetch("/api/lancamentos").then((r) => r.json()).catch(() => ({ lancamentos: [] })),
       fetch("/api/meu-contexto").then((r) => r.json()).catch(() => ({})),
     ]).then(([c, a, l, ctx]) => {
-      setClientes(Array.isArray(c) ? c : []);
-      setAgendaHoje(Array.isArray(a) ? a : []);
-      setLancamentos(Array.isArray(l) ? l.slice(0, 20) : []);
+      setClientes(Array.isArray(c?.clientes) ? c.clientes : []);
+      setAgendaHoje(Array.isArray(a?.agendamentos) ? a.agendamentos : []);
+      setLancamentos(Array.isArray(l?.lancamentos) ? l.lancamentos.slice(0, 20) : []);
       if (ctx?.nome) setNomeUsuaria(ctx.nome.split(" ")[0]);
       setLoading(false);
     });
@@ -157,7 +157,7 @@ export default function PainelPage() {
       ) : (
         /* ── PAINEL REAL ── */
         <div className="space-y-5 max-w-5xl">
-          {/* Caixa da Diffy */}
+          {/* Diffy diz — alerta inteligente com dados reais */}
           <div>
             <div className="flex items-center gap-2.5 mb-3">
               <div className="relative w-6 h-6 flex-shrink-0 rounded-full overflow-hidden">
@@ -169,13 +169,25 @@ export default function PainelPage() {
             </div>
             <div className="p-4 rounded-2xl" style={{ background: "#FCE4EC", border: "1px solid #F8BBD0" }}>
               <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-inter)", color: "#2C2C2C" }}>
-                {agendaHoje.length > 0
-                  ? `Você tem ${agendaHoje.length} compromisso${agendaHoje.length > 1 ? "s" : ""} hoje. Quer um resumo do que vem pela frente?`
-                  : "Nenhum compromisso agendado pra hoje. Boa hora pra checar o pipeline de clientes ou criar um conteúdo."}
+                {(() => {
+                  const partes: string[] = [];
+                  if (agendaHoje.length > 0) {
+                    const nomes = agendaHoje.slice(0, 2).map((e) => e.titulo).join(" e ");
+                    partes.push(`${agendaHoje.length === 1 ? "1 compromisso" : `${agendaHoje.length} compromissos`} hoje${agendaHoje.length <= 2 ? `: ${nomes}` : ""}.`);
+                  }
+                  if (receitaMes > 0) {
+                    partes.push(`R$ ${receitaMes.toLocaleString("pt-BR")} faturados esse mês.`);
+                  }
+                  if (ativas > 0) {
+                    partes.push(`${ativas} cliente${ativas > 1 ? "s ativas" : " ativa"}.`);
+                  }
+                  if (partes.length === 0) return "Tudo tranquilo. Quer revisar o pipeline ou planejar a semana?";
+                  return partes.join(" ") + " Pergunte qualquer coisa.";
+                })()}
               </p>
               <Link href="/conversar" className="inline-flex items-center gap-1 text-xs font-semibold mt-2"
                 style={{ color: "#D81B60", fontFamily: "var(--font-inter)" }}>
-                Perguntar pra Diffy <ArrowRight size={11} />
+                Falar com a Diffy <ArrowRight size={11} />
               </Link>
             </div>
           </div>

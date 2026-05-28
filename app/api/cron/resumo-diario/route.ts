@@ -13,7 +13,6 @@ const twilioClient = Twilio(
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function GET(request: NextRequest) {
-  // Verifica header de segurança do Vercel Cron
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
@@ -31,6 +30,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: true, enviados: 0 });
   }
 
+  const hoje = new Date().toISOString().split("T")[0];
+  const amanha = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+  const diaSemana = new Date().toLocaleDateString("pt-BR", { weekday: "long" });
+
   let enviados = 0;
 
   for (const inedita of ineditas) {
@@ -40,15 +43,18 @@ export async function GET(request: NextRequest) {
         buscarContextoOperacional(inedita.id),
       ]);
 
-      const systemPrompt = buildSystemPrompt(contextoRaiox, contextoOperacional);
+      // Busca dados específicos de hoje e amanhã
+      const [agendaHoje, agendaAmanha, financeiroMes] = await Promise.all([
+        admin.from("agendamentos").select("titulo, hora, tipo").eq("inedita_id", inedita.id).eq("data", hoje).eq("feito", false).order("hora"),
+        admin.from("agendamentos").select("titulo, hora").eq("inedita_id", inedita.id).eq("data", amanha).eq("feito", false).order("hora"),
+        admin.from("lancamentos").select("tipo, valor").eq("inedita_id", inedita.id).gte("data", hoje.slice(0, 7) + "-01"),
+      ]);
 
-      const amanha = new Date();
-      amanha.setDate(amanha.getDate() + 1);
-      const dataFormatada = amanha.toLocaleDateString("pt-BR", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-      });
+      const sessaoHoje = agendaHoje.data?.map((a) => `${a.hora ? a.hora + " — " : ""}${a.titulo}`).join(", ") || "nenhum";
+      const sessaoAmanha = agendaAmanha.data?.map((a) => `${a.hora ? a.hora + " — " : ""}${a.titulo}`).join(", ") || "nenhum";
+      const receitaMes = (financeiroMes.data ?? []).filter((l) => l.tipo === "receita").reduce((s, l) => s + Number(l.valor), 0);
+
+      const systemPrompt = buildSystemPrompt(contextoRaiox, contextoOperacional);
 
       const resp = await anthropic.messages.create({
         model: "claude-sonnet-4-6",
@@ -57,14 +63,13 @@ export async function GET(request: NextRequest) {
         messages: [
           {
             role: "user",
-            content: `Mande o resumo de amanhã (${dataFormatada}) pra mim. Máximo 5 linhas. O que tenho na agenda, alertas financeiros importantes, e uma sugestão rápida de conteúdo ou tarefa se relevante. Direto, sem enrolação.`,
+            content: `Manda o bom dia de ${diaSemana} pra mim. Dados reais de hoje: agenda hoje = ${sessaoHoje}; agenda amanhã = ${sessaoAmanha}; receita do mês até agora = R$ ${receitaMes.toFixed(2)}. Seja direta e específica com esses dados. Máximo 5 linhas. Sem "Bom dia" genérico — vai direto ao ponto do que importa hoje.`,
           },
         ],
       });
 
       const textBlock = resp.content[0];
-      const texto =
-        textBlock && textBlock.type === "text" ? textBlock.text : null;
+      const texto = textBlock && textBlock.type === "text" ? textBlock.text : null;
       if (!texto) continue;
 
       await twilioClient.messages.create({
